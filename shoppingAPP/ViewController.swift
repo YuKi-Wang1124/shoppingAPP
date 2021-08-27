@@ -12,13 +12,18 @@ class ViewController: UIViewController {
     @IBOutlet weak var dressImageView: UIImageView!
     @IBOutlet weak var informationImageView: UIImageView!
     @IBOutlet weak var pageControl: UIPageControl!
-    @IBOutlet weak var pageLabel: UILabel!
+    @IBOutlet var imagesSwipeGestureRecognizer: UISwipeGestureRecognizer!
+    @IBOutlet var imagesRightSwipeGestureRecognizer: UISwipeGestureRecognizer!
+    
+    
     @IBOutlet weak var informationSegmentedControl: UISegmentedControl!
-    @IBOutlet weak var xsSizeButton: UIButton!
-    @IBOutlet weak var sSizeButton: UIButton!
-    @IBOutlet weak var mSizeButton: UIButton!
-    @IBOutlet weak var lSizeButton: UIButton!
-    @IBOutlet weak var xlSizeButton: UIButton!
+    @IBOutlet weak var pageLabel: UILabel!
+    @IBOutlet weak var piecesLabel: UILabel!
+    @IBOutlet weak var piecesStepper: UIStepper!
+    @IBOutlet weak var totalAcountLabel: UILabel!
+    @IBOutlet weak var priceLabel: UILabel!
+    
+    
     
     let dressImageNameArray = ["dress0","dress1","dress2","dress3","dress4","dress5","dress6","dress7","dress8"]
     let coatImageNameArray = ["coat0","coat1","coat2","coat3","coat4","coat5","coat6","coat7","coat8"]
@@ -26,10 +31,9 @@ class ViewController: UIViewController {
     
     var indexNumber: Int = 0
     var pageNumber: Int = 1
- 
-    
-   
-    
+    var pieces: Int = 0
+    var totalAcountMoney: Int = 0
+    var money: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +42,16 @@ class ViewController: UIViewController {
         informationImageView.image = UIImage(named: "intro")
         pageLabel.text = "  1 / 9 "
         pageLabel.layer.cornerRadius = 14
+        piecesLabel.text = " 數量           \(pieces)"
         
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currencyISOCode
+        formatter.locale = Locale(identifier: "zh_TW")
+        formatter.maximumFractionDigits = 0
+        let moneyString = formatter.string(from: NSNumber(value: money))
+        totalAcountLabel.font = UIFont.systemFont(ofSize: 30)
+        totalAcountLabel.textAlignment = .center
+        totalAcountLabel.text = moneyString
     }
 
 
@@ -47,6 +60,8 @@ class ViewController: UIViewController {
         pageControl.currentPage = indexNumber
         pageNumber = indexNumber + 1
         pageLabel.text = " \(pageNumber) / 9 "
+        
+        
     }
     
     
@@ -122,10 +137,44 @@ class ViewController: UIViewController {
     }
     
     
+    @IBAction func piecesSteper(_ sender: Any) {
+        piecesLabel.font = UIFont.systemFont(ofSize: 24)
+        pieces = Int(piecesStepper.value)
+        piecesLabel.text = " 數量           \(pieces)"
+        money = 890 * pieces
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currencyISOCode
+        formatter.locale = Locale(identifier: "zh_TW")
+        formatter.maximumFractionDigits = 0
+        let moneyString = formatter.string(from: NSNumber(value: money))
+        totalAcountLabel.font = UIFont.systemFont(ofSize: 30)
+        totalAcountLabel.textAlignment = .center
+        totalAcountLabel.text = moneyString
+    }
     
 
     
- 
+    @IBAction func swpie(_ sender: UISwipeGestureRecognizer) {
+        if sender.direction == .right {
+            indexNumber -= 1
+            if indexNumber == -1 {
+                indexNumber = 8
+            } else {
+                changeSync()
+            }
+        } else if sender.direction == .left {
+                indexNumber += 1
+                if  indexNumber == 9 {
+                    indexNumber = 0
+                    changeSync()
+                } else {
+                    changeSync()
+                }
+        }
+    }
+    
+
+    
+
+
 }
-
-
